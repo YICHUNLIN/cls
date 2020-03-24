@@ -1,6 +1,8 @@
 # ConstructionLogSystem
 
-2016-2018 NCTU Civil Engineering master's dissertation by I-Chun Lin(林逸群)
+2016-2018 NCTU Civil Engineering master's dissertation by I-Chun Lin
+
+此為研究產物，若使用了有任何損失請不要找作者，參考參考就好。
 
 # get start on docker
 
