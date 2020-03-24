@@ -2,7 +2,7 @@
 
 2016-2018 NCTU Civil Engineering master's dissertation by I-Chun Lin
 
-此為研究產物，若使用了有任何損失請不要找作者，參考參考就好。
+此為研究產物，年代久遠，有些模組似乎已經停止更新，若使用了有任何損失請不要找作者，參考參考就好。
 
 # get start on docker
 
