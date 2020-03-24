@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YICHUNLIN/ConstructionLogSystem.git"
+    "url": "git+https://github.com/YICHUNLIN/cls.git"
   },
   "author": "vic lin",
-  "license": "ISC",
+  "license": "GPL3.0",
   "bugs": {
-    "url": "https://github.com/YICHUNLIN/ConstructionLogSystem/issues"
+    "url": "https://github.com/YICHUNLIN/cls/issues"
   },
-  "homepage": "https://github.com/YICHUNLIN/ConstructionLogSystem#readme",
+  "homepage": "https://github.com/YICHUNLIN/cls#readme",
   "dependencies": {
     "async": "^2.6.3",
     "base-64": "^0.1.0",
