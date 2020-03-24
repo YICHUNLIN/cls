@@ -1,0 +1,272 @@
+extends layout
+
+block content
+      div(ng-controller="pageController as pc")
+            
+  
+
+
+            div(ng-show="pageSwitch != 'login' && pageSwitch != 'signup'" ng-controller="menuController as mc")
+                  div.ui.inverted.menu
+                        div.header.item 逸群系統
+                              a.item(ng-show="pageSwitch == 'board'" ng-click="mc.click_add()")
+                                    i.large.add.square.icon
+                              a.item(ng-show="pageSwitch == 'checks'")
+                                    | Project Profile
+                              a.item(ng-show="pageSwitch == 'itemchecks'")
+                                    | All checks
+                              a.item(ng-show="pageSwitch == 'checks'" ng-click="mc.btn_addcheck()")
+                                   | New Activity
+
+                              div.right.menu
+                                    div.ui.dropdown.item(tabindex='0')
+                                          i.large.home.icon
+                                          i.dropdown.icon
+                                          div.menu.transition.hidden(tabindex='-1')
+                                                div.item
+                                                      i.large.power.icon
+                                                      span 登出
+                                                div.item
+                                                      i.large.user.icon
+                                                      span 個人資料
+                                                div.item
+                                                      i.large.setting.icon
+                                                      span 設定
+                                                div.divider
+                                                div.item Separated Link
+                                                div.divider
+                                                div.item One more separated link
+
+
+
+
+              //card
+            div(ng-show="pageSwitch == 'board'" ng-controller="boardController as bc" )
+                  h2.ui.dividing.header
+                  div.ui.grid.container
+                        div.four.wide.column(ng-repeat="card in bc.cards" ng-show="card.thumb")
+                              div.ui.raised.link.card
+                                    div.content
+                                          a(ng-click="bc.click_thumb(card.id)")
+                                                i.right.floated.large.red.thumbs.outline.up.icon
+                                          div.header
+                                                div(ng-show="card.status==1")
+                                                      i.red.alarm.icon
+                                                      | {{card.name}}
+                                                div(ng-show="card.status==2")
+                                                      i.green.alarm.icon
+                                                      | {{card.name}}
+                                                div(ng-show="card.status==3")
+                                                      i.yellow.alarm.icon
+                                                      | {{card.name}}
+                                    div.content
+                                          a(ng-click="bc.btnselectedCard(card.id)")
+                                                h4.ui.sub.header
+                                                div.ui.small.feed
+                                                      div.event
+                                                            div.content
+                                                                  div.summary
+                                                                        span 開工日期: {{card.start}}
+                                                      div.event
+                                                            div.content
+                                                                  div.summary
+                                                                        span 工期: {{card.duration}} {{card.duration_type}}
+                                                      div.event
+                                                            div.content
+                                                                  div.summary
+                                                                        span.category 工程類別: {{card.category}}
+                  // 分隔線
+                  h2.ui.dividing.header
+                  div.ui.grid.container
+                        div.four.wide.column(ng-repeat="card in bc.cards" ng-show="!card.thumb")
+                              div.ui.raised.link.card
+                                    div.content
+
+                                          a(ng-click="bc.click_thumb(card.id)")
+                                                i.right.floated.large.blue.thumbs.outline.up.icon
+                                          div.header
+                                                div(ng-show="card.status==1")
+                                                      i.red.alarm.icon
+                                                      | {{card.name}}
+                                                div(ng-show="card.status==2")
+                                                      i.green.alarm.icon
+                                                      | {{card.name}}
+                                                div(ng-show="card.status==3")
+                                                      i.yellow.alarm.icon
+                                                      | {{card.name}}
+                                    div.content
+                                          a(ng-click="bc.btnselectedCard(card.id)")
+                                                h4.ui.sub.header
+                                                div.ui.small.feed
+                                                      div.event
+                                                            div.content
+                                                                  div.summary
+                                                                        span 開工日期: {{card.start}}
+                                                      div.event
+                                                            div.content
+                                                                  div.summary
+                                                                        span 工期: {{card.duration}} {{card.duration_type}}
+                                                      div.event
+                                                            div.content
+                                                                  div.summary
+                                                                        span.category 工程類別: {{card.category}}
+
+
+
+
+            //login
+            div(ng-controller="loginController as lc" )
+                  div.ui.middle.aligned.center.aligned.grid(ng-show="pageSwitch == 'login' || pageSwitch == 'signup'" )
+                        div.column
+                              h2.ui.teal.image.header
+                              div.content
+                                    form.ui.large.form
+                                          div.ui.stacked.segment
+                                                div.field
+                                                      div.ui.left.icon.input
+                                                            i.user.icon
+                                                            input(type='text', name='email', placeholder='Account' ng-model="loginInfo.account")
+                                                div.field
+                                                      div.ui.left.icon.input
+                                                            i.lock.icon
+                                                            input(type='password', name='password', placeholder='Password' ng-model="loginInfo.password")
+                                                button.ui.fluid.large.teal.button(type="submit" ng-click="lc.btnLogin()")
+                                                  | Login
+                                          div.ui.error.message
+                                    div.ui.message
+                                          | New to us?
+                                          a(href= "" ng-click="lc.btnSignup()") Sign Up
+
+                  // sign up
+                  div.ui.middle.aligned.center.aligned.grid(ng-show="lc.showSignup && pageSwitch == 'login' ")
+                        div.column
+                              h2.ui.teal.image.header
+                              div.content
+                                    form.ui.form
+                                          div.ui.stacked.segment
+                                                h4.ui.header 個人資料
+                                                div.field
+                                                      div.two.twelve.wide.fields
+                                                            div.field
+                                                                  input(type='text', name='shipping[first-name]', placeholder='姓')
+                                                            div.field
+                                                                  input(type='text', name='shipping[last-name]', placeholder='名')
+                                                div.field
+                                                      div.fields
+                                                            div.twelve.wide.field
+                                                                  input(type='text', name='shipping[address]', placeholder='手機')
+                                                            div.twelve.wide.field
+                                                                  input(type='text', name='shipping[address-2]', placeholder='室內')
+                                                      div.sixteen.wide.field
+                                                            div.ui.fluid.search.selection.dropdown
+                                                                  input(type='hidden', name='country')
+                                                                  i.dropdown.icon
+                                                                  div.default.text 選擇角色
+                                                                  div.menu
+                                                                        div.item
+                                                                              | 工程師
+                                                                        div.item
+                                                                              | 監造
+                                                                        div.item
+                                                                              | 業主
+                                                                        div.item
+                                                                              | 比工程師大一點
+                                                h4.ui.header 公司資料
+                                                div.field
+                                                      div.fields
+                                                            div.sixteen.wide.field
+                                                                  input(type='text', name='shipping[address]', placeholder='名稱')
+                                                      div.fields
+                                                            div.sixteen.wide.field
+                                                                  input(type='text', name='shipping[address-2]', placeholder='地址')
+                                                      div.fields
+                                                            div.sixteen.wide.field
+                                                                  input(type='text', name='shipping[address-2]', placeholder='電話')
+                                                      div.fields
+                                                            div.sixteen.wide.field
+                                                                  input(type='text', name='shipping[address-2]', placeholder='電話')
+
+                                                button.ui.fluid.large.teal.button(type="submit")
+                                                      | sign up
+
+
+
+
+
+            //project profile
+
+
+            //checks
+            div.ui.container(ng-show="pageSwitch == 'checks'")
+                  div(ng-controller="checkController as cc")
+                        h2.ui.dividing.header
+                        div.ui.grid.container
+                              div.four.wide.column(ng-repeat="check in checks")
+                                    div.ui.raised.link.card
+                                          div.content
+                                                i.right.floated.remove.icon
+                                                div.header {{check.datetime}}
+                                                div.description
+                                                      p {{check.description}}
+                                          div.extra.content
+                                                a.right.floated.star(ng-click="btncheckit(check.id)")
+                                                      i.star.icon
+                                                      |       check it
+
+
+
+
+
+            //item checks
+            div.ui.container(ng-show="pageSwitch == 'itemchecks'")
+                  div(ng-controller="itemchecksController as csc")
+                        h2.ui.dividing.header
+                        div.ui.grid.container
+                              //loop
+                              div.five.wide.column(ng-repeat="check in itemchecks")
+                                    div.ui.raised.link.card
+                                          div.content
+                                                | {{check.itemname}}
+                                                a(ng-click="")
+                                                      i.right.floated.large.blue.thumbs.outline.up.icon
+                                          div.content
+                                                div.ui.large.image
+                                                      svg(width='200', height='100')
+                                                            img(src='/img/1.png')
+                                          div.content
+                                                a
+                                                      h4.ui.sub.header
+                                                      div.ui.small.feed
+                                                            div.event
+                                                                  div.content
+                                                                        div.summary
+                                                                              span 檢查項目: {{check.check_category}}
+                                                            div.event
+                                                                  div.content
+                                                                        div.summary
+                                                                              span 檢查類別: {{check.check_type}}
+                                                            div.event
+                                                                  div.content
+                                                                        div.summary
+                                                                              span 目標: {{check.description}}
+                                                      div.extra.content
+                                                            div.ui.small.comments
+                                                                  h3.ui.dividing.header
+                                                                  div.comment(ng-repeat="cmt in check.comments")
+                                                                        a.avatar
+                                                                              img(src='/img/vic.jpg')
+                                                                        div.content
+                                                                              a.author {{cmt.name}}
+                                                                              div.metadata
+                                                                                    span.date Today at 5:42PM
+                                                                              div.text
+                                                                                    {{cmt.comment}}
+                                                            form.ui.reply.form
+                                                                  div.field
+                                                                       input(type='text' ng-model="csc.textarea_data")
+                                                                  div.ui.blue.labeled.submit.icon.button(ng-click="csc.click_add(check.id)")
+                                                                        i.icon.edit
+                                                                        |  Add Reply
+            script(src='js/semantic_action.js')
+
+

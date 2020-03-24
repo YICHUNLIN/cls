@@ -1,0 +1,173 @@
+doctype html
+html(ng-app="CLS_app" ng-cloak )
+	head
+		title= title
+		meta(name='viewport', content='width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no')
+		meta(charset='utf-8')
+		link(rel='stylesheet', href='https://developer.api.autodesk.com/modelderivative/v2/viewers/style.css', type='text/css')
+		link(rel='stylesheet', type='text/css', href='../semantic/public/dist/semantic.css')
+		link(rel='stylesheet', type='text/css', href='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css')
+		
+		link(rel='stylesheet', href='/css/forgeStyle.css')
+		link(rel='icon', href='/img/favicon9.ico', type='image/x-icon')
+		//link(href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css', rel='stylesheet')
+
+		script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js')
+		script(src='../semantic/public/dist/semantic.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js')
+
+		script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.2/angular.min.js')
+		script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.2/angular-resource.min.js')
+		script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.2/angular-route.min.js')
+		script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.2/angular-cookies.js')
+		script(type='text/javascript', src='https://www.gstatic.com/charts/loader.js')
+		script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBLxOWr1HxMvSb2Mim4roJUDWO0u1Pr_OE', async='', defer='')
+		script(src='http://angular-ui.github.com/bootstrap/ui-bootstrap-tpls-0.1.0.js')
+
+		script(src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.debug.js")
+
+		script(src='../js/CLS_app.js')
+		script(src='../js/CLS_services.js')
+		script(src='../js/CLS_controllers.js')
+
+		script(src='../js/CLS_admin_controllers.js')
+		script(src='../js/CLS_admin_services.js')
+
+		script(src='../js/CLS_init_controllers.js')
+		script(src='../js/CLS_init_services.js')
+
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js')
+
+		// for forge
+		// The Viewer JS
+		//script(src='https://developer.api.autodesk.com/modelderivative/v2/viewers/three.min.js')
+		script(src='https://developer.api.autodesk.com/modelderivative/v2/viewers/viewer3D.min.js?v=v5.0')
+		//Extension
+		script(src='../js/UIComponent.js')
+		script(src='../js/myPanel.js')
+
+
+
+	body
+		div(ng-controller="ForgeController as FC")
+			div#MyViewerDiv
+
+			div#CO2Panel.uicomponent-panel-container(ng-show="FC.ShowCO2Panel")
+				div.uicomponent-panel-controls-container
+					canvas#myChart
+
+			div#DetailPanel.uicomponent-panel-container(ng-show="FC.ShowDetail")
+				div.uicomponent-panel-controls-container
+					p 溫度: 22 度C
+					p 濕度: 63%
+					p CO2: 453 ppm
+					p pm2.5: 23.6 ppm
+					p 一小時用電: 3 度
+
+			div#CusPanel.uicomponent-panel-container(ng-show="FC.ShowPictureWall")
+				div.uicomponent-panel-controls-container
+					div(ng-show="!FC.isShowWall()")
+						div.ui.negative.message
+							p 所選元件沒有任何資料
+					div(ng-show="FC.isShowWall()")
+						div.ui.selection.dropdown()
+							input#gender(type="hidden" )
+							div.default.text 查驗
+							div.menu
+								div.item(ng-repeat="ci in FC.CheckItems" ng-click="FC.clickPicturewallPanel(ci.ciid)")
+									| {{ci.datetime | date:'yyyy/MM/dd'}} {{ci.title}} {{ci.checkcategory}} {{ci.categoryType}}
+						div.ui.divider
+						table.ui.table(ng-show="FC.CheckItemsPictures.length > 0")
+							thead
+								tr
+									th 照片
+									th 座標
+							tbody
+								tr
+									td 
+										img.ui.small.image(ng-src="{{FC.selectedPicture.url}}")
+									td(ng-show="FC.selectedPicture.latitude")
+										div#map(style='height : 300px; width : 500px' data-ng-init="loadMap()")
+							tfoot
+								tr
+									th(colspan='2')
+										div.ui.right.floated.pagination.menu
+											a.item(ng-repeat="cipi in FC.CheckItemPictureIndexes" ng-click="FC.SelectPicture(cipi)") {{cipi}}
+
+						script.
+							$('.ui.dropdown').dropdown();
+			div#UploadingPanel.uicomponent-panel-container(ng-show="FC.isShowUploadingPanel()")
+
+				div(ng-show="!FC.isShowUploadingPanel()")
+					div.ui.negative.message
+						p 所選元件沒有任何資料
+				div.uicomponent-panel-controls-container(ng-show="FC.isShowUploadingPanel()")
+					table.ui.cell.table
+						tbody
+							tr
+								td 
+									label 查驗集
+								td
+									div.ui.selection.dropdown
+										input(type="hidden" name="check")
+										div.default.text XX查驗
+										div.menu
+											div.item(ng-repeat="cc in FC.checks" ng-click="FC.didSelectedCheck(cc)")
+												| {{cc.title}}
+							tr
+								td
+									label 檢查項目
+								td
+									div.ui.selection.dropdown
+										input(type="hidden" name="checkcategory")
+										div.default.text 鋼筋
+										div.menu
+											div.item(ng-repeat="CIC in FC.checkCategories" ng-click="FC.didSelectedCheckCategory(CIC)")
+												| {{CIC.name}}
+							tr
+								td
+									lable 子項目
+								td
+									div.ui.selection.dropdown
+										input(type="hidden" name="checkcategorytype")
+										div.default.text 保護層厚度
+										div.menu
+											div.item(ng-repeat="cict in FC.checkcategorytypes" ng-click="FC.didselectCheckCategoryType(cict)")
+												| {{cict.name}}
+							tr
+								td
+									label 檔案上傳
+								td
+									
+									div.ui.input
+										input(type="file" multiple)
+									//div.ui.grid
+										div.four.wide.column
+											div.ui.input
+												input(type="file" multiple)
+										div.four.wide.column
+											div.ui.input
+												input(type="file")
+										div.four.wide.column
+											div.ui.input
+												input(type="file")
+										div.four.wide.column
+											div.ui.input
+												input(type="file")
+							tr
+								td
+								td
+									button.ui.teal.button(ng-click="FC.clickUploadPictures()") 上傳
+
+						script.
+							$('.ui.dropdown').dropdown();
+
+
+
+			style.
+				.my-view-front-button {
+					background: red;
+				}
+				.my-view-back-button {
+					background: blue;
+				}

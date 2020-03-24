@@ -1,0 +1,284 @@
+extends sublayout
+
+block rightcontainer
+
+	div.ui.container(ng-controller="projectController as pc" ng-switch on="pc.projectViewSwitch")
+		div.ui.secondary.menu()
+			a.item(ng-click="pc.btnmemberview()")
+				| Project 參與者
+			a.item(ng-click="pc.btnitemview()")
+				| Project 項目
+			a.item( ng-click="pc.btnprofileview()")
+				| Profile
+			//a.item( ng-click="pc.btnGPS()")
+				| GPS座標
+			a.item(href="/forge")
+				| Forge
+			a.item( ng-click="pc.btnactivitysView()")
+				| 查看活動
+			a.item(ng-switch-when="activity" ng-click="pc.btnaddcheck()")
+				| 新增活動
+		// checksMode------------------------------------------------------------------------------checksMode
+		div.ui.grid.container(ng-switch-when="activity")
+			div.four.wide.column(ng-repeat="check in checks")
+				div.ui.raised.link.card(ng-click="pc.btncheckit(check.id)")
+					div.content
+						i.right.floated.remove.icon
+						div.header {{check.title}}
+						div.description
+							p {{check.description}}
+					div.extra.content
+						p.left.floated
+							i.time.icon
+							| {{check.datetime | date:'yyyy/MM/dd'}}
+		// 按下新增 check 後 會出現
+		div.ui.mini.modal.newCS
+			i.close.icon
+			div.header
+				| 新增-資料集
+			div.content
+				div.ui.form
+					p 標題
+					div.ui.input
+						input(type='text', placeholder='標題',ng-model="pc.newItemForm.title")
+					p 巡檢日期
+					div.ui.input
+						input(type='date' , ng-model="pc.newItemForm.date")
+					p 敘述
+					div.ui.input
+						input(type='text', placeholder='敘述', ng-model="pc.newItemForm.description")
+			div.actions
+				div.ui.button(ng-click="pc.AddCheckDialogOk()")
+					| 儲存
+		//gps-------------------------------------------------------------------------------------------gps
+		//div(ng-switch-when="gps")
+			div.ui.form
+				div.ui.stacked.segment
+					div.field(ng-controller="mapController as mapc")
+						h4.ui.header Google Map 選取工址座標範圍
+						div#map(style='height : 400px; width : 900px' data-ng-init="loadMap()")
+					div.field
+						h4.ui.header Marker 點
+						table.ui.very.basic.collapsing.celled.table
+							thead
+								tr
+									td 序列
+									td latditude
+									td longitude
+							tbody
+								tr(ng-repeat="pos in markerList")
+									td 1
+									td {{pos.lat}}
+									td {{pos.lng}}
+					div.filed
+						h4.ui.header 座標輸入
+						div.eight.wide.field
+							div.two.field
+								div.field
+									input(type='text', placeholder='序列')
+								div.field
+									input(type='text', placeholder='Latidute')
+								div.field
+									input(type='text', placeholder='Longitude')
+							div.two.fields
+								div.field
+									button.ui.fluid.large.teal.button
+										| 更新
+								div.field
+									button.ui.fluid.large.teal.button
+										| 移除  
+		//profile------------------------------------------------------------------------------------profile
+		div(ng-switch-when="profile")
+			form.ui.form
+				div.ui.stacked.segment
+					h4.ui.header Project Profile 設定
+					p 案件ID: {{profileInfo.identify}}
+					div.field
+						div.two.twelve.wide.fields
+							div.field
+								| 名稱
+								input(type='text', placeholder='OOXX建案' ng-model="profileInfo.name") 
+							div.field 
+								| 契約工期
+								input(type='text', placeholder='120' ng-model="profileInfo.duration") 
+							div.field
+								| 增加天數
+								input(type='text', placeholder="10" ng-model="profileInfo.increaseDuration") 
+							div.field
+								| 工期模式
+								div.ui.fluid.search.selection.dropdown
+									input(type='hidden', name='datetype' ng-model="profileInfo.datetype") 
+									i.dropdown.icon
+									div.text  {{profileInfo.datetype}}
+									div.menu
+										div.item(ng-repeat="dt in datetypes" data-value="{{dt}}" ng-click="pc.datetypesSelected(dt)")
+											| {{dt}}
+						div.field
+							| 敘述
+							input(type='text', placeholder='敘述' ng-model="profileInfo.description") 
+						div.two.twelve.wide.fields
+							div.field
+								| 實際起日
+								input(type='date', placeholder='' ng-model="profileInfo.startdate" ) 
+							div.field
+								| 預計迄日
+								input(type='date', placeholder='' ng-model="profileInfo.estimateEndDate") 
+							div.field
+								| 追加後迄日
+								input(type='date', placeholder='' ng-model="profileInfo.afterchangeDesignDate") 
+							div.field
+								| 實際迄日
+								input(type='date', placeholder='' ng-model="profileInfo.actualEndDate") 
+						div.two.twelve.wide.fields
+							div.field
+								button.ui.fluid.large.teal.button(ng-click="pc.clickUpdataProfile()")
+									| 更新
+			script.
+					$('.ui.dropdown')
+					.dropdown()
+					;
+			form.ui.form
+				div.ui.stacked.segment
+					h4.ui.header Forge 模型 IFC 上傳
+						div.field
+							div.field
+								input(type='file', name='upload')
+							div.field
+								button.ui.large.teal.button(ng-click="pc.ifcupload()") 上傳
+							div.field
+								div.ui.indicating.progress.upload(ng-show="pc.uploadModelVis")
+									div.bar
+									div.label
+										| {{pc.uploadModelStatus}}
+			
+
+
+
+
+		//items----------------------------------------------------------------------------------------items
+		div(ng-switch-when="item")
+			div.ui.mini.modal.newPItem
+				i.close.icon
+				div.header
+					| {{pc.NewProjectItem.parent.id}} - {{pc.NewProjectItem.parent.name}}: 新增子項目
+				div.content
+					div.ui.form
+						p 名稱
+						div.ui.input
+							input(type='text', placeholder='ex:80x70排水溝' ng-model="pc.NewProjectItem.name")
+						p 敘述
+						div.ui.input
+							input(type='text' , placeholder='ex:左側ooxx排水溝' ng-model="pc.NewProjectItem.description")
+				div.actions
+					div.ui.button(ng-click="pc.clickCreateNewPItemInDialog()")
+						| 新增
+			// project items------------------------------------------------------------------project items
+			div.ui.form
+				div.ui.stacked.segment
+					h4.ui.header 工項
+					table.ui.selectable.celled.table
+						thead
+							tr 
+								th 系統編號
+								th BIM 元件編號
+								th 名稱
+								th 
+						tbody(ng-repeat="pi in pc.selectedItems")
+							tr
+								td {{pi.id}}
+								td {{pi.bimid}}
+								td {{pi.name}}
+								td 
+									button(ng-click="pc.selectProjectItemCell(pi)") 新增子項目
+						tfoot
+							tr
+								th(colspan='4')
+									div.ui.right.floated.pagination.menu
+										a.icon.item
+											i.left.chevron.icon
+										a.item(ng-repeat="page in pc.PIPages" ng-click="pc.clieckPISpages(page)") {{page}}
+										a.icon.item
+											i.right.chevron.icon
+					//div.ui.accordion
+						div
+							div.title
+								i.dropdown.icon
+								|   一.  基礎工程 
+							div.content
+								table.ui.selectable.celled.table
+									thead
+										tr 
+											th 系統編號
+											th BIM 元件編號
+											th 名稱
+									tbody(ng-repeat="pi in pc.projectItems")
+										tr(ng-click="pc.selectProjectItemCell(pi)")
+											td {{pi.id}}
+											td {{pi.bimid}}
+											td {{pi.name}}
+						
+						script.
+								$('.ui.accordion')
+								.accordion('refresh')
+								;
+			script.
+				$('.ui.dropdown')
+				.dropdown()
+				;
+
+		//member------------------------------------------------------------------------------------member
+		div(ng-switch-when="member")
+			form.ui.form
+				div.ui.stacked.segment
+					h4.ui.header Project 參與者
+					div.field
+						div.ui.grid
+							div.eight.wide.column
+								table.ui.very.basic.collapsing.celled.table
+									thead
+										tr
+											th 帳號
+											th 姓名
+											th 隸屬單位
+											th 權限
+									tbody(ng-repeat="pms in pc.projectMembers")
+										tr
+											td
+												| {{pms.account}}
+											td
+												h4.ui.image.header
+													img.ui.mini.rounded.image(ng-src='{{pms.photourl}}')
+													div.content
+														| {{pms.firstname + " " + pms.lastname}}
+														div.sub.header
+															| {{pms.role}}
+											td
+												| {{pms.company_name}}
+											td
+												| {{pms.ptype}}
+
+							div.eight.wide.column(ng-show="pc.l4")
+								h4.ui.header 參與者更新
+								div.field
+									div.field
+										input(type='text', placeholder='請輸入id' ng-model="pc.PM.account")
+									div.field
+										div.ui.fluid.search.selection.dropdown
+											input(type='hidden', name='pro')
+											i.dropdown.icon
+											div.default.text Project 權限
+											div.menu
+												div.item(ng-repeat="p in pc.permissions" data-value="p.permlevel" ng-click="pc.dropdownSelectPermission(p.permlevel)")
+													| {{p.permlevel+"("+p.desctrption+")"}}
+									div.two.fields
+										div.field
+											button.ui.fluid.large.teal.button(ng-click="pc.clickRenewButton()")
+												| 更新/新增
+										div.field
+											button.ui.fluid.large.teal.button(ng-click="pc.clickDeleteButton()")
+												| 移除    
+			script.
+						$('.ui.dropdown')
+						.dropdown()
+						;
+		//forge------------------------------------------forge

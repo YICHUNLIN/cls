@@ -1,0 +1,31 @@
+extends layout
+
+block content
+
+	div.ui.teal.fixed.inverted.menu()
+		div.ui.container(ng-controller="menuController as mc")
+			div.item
+				a.ui.logo.icon.image
+				//img(src='/img/Logo.png')
+				b Construction Log System
+			a.item(ng-click="mc.clickBoard()")
+				i.large.book.icon
+				b 案件管理
+			//a.item
+				i.large.checked.calendar.icon
+				b 歷史活動
+			//a.item
+				i.large.delete.calendar.icon
+				b 檢驗項目追蹤
+			div.right.menu
+				a.item(ng-click="mc.clickPersonal()")
+					i.large.user.icon
+					b 你好~ {{mc.user}} !
+				a.item(ng-click="mc.clickLogout()")
+					i.large.power.icon
+					b 登出
+	div.thirteen.wide.column
+		block rightcontainer
+
+
+

@@ -1,0 +1,240 @@
+- Project
+#
+案件、工程、專案
+#
+<
+identify, string-30,primaryKey,allowNull-false				'工程編號、專案編號'
+name, string 												'名稱'
+duration, integer 											'工期'
+startdate, date 											'開始日期'
+estimateEndDate, date 										'預估結束日期'
+actualEndDate, date 										'實際結束日期'
+afterchangeDesignDate, date 								'變更設計後結束日期'
+increaseDuration, integer 									'增加工期天數'
+description, text 											'敘述'
+datetype, string-19, allowNull-true, defaultValue-工作天		'計算工期的天數'
+>
+
+- ProjectLocations
+#
+專案的地理位置
+1Project:nProjectLocations
+#
+<
+id, integer, autoIncrement, primaryKey, allowNull-false 		'地理位置編號'
+belongproject, string-30, pk-Project.idenrify, allowNull-false  '屬於專案'
+sequence, integer 												'順序'
+latatude, double 												'經度'
+longitude, double 												'緯度'
+>
+
+- User
+#
+使用者
+#
+<
+account, string, primaryKey,allowNull-false 				'帳號'
+firstname, string 											'姓'
+lastname, string 											'名'
+password, string 											'密碼'
+salt, string 												'加密密碼用的key'
+mobile, string 												'手機'
+tel, string 												'市內電話'
+email, string, isEmail-true 								'email'
+role, string 												'角色'
+company_name, string 										'單位名稱'
+company_address, string 									'單位地址'
+company_tel, string 										'單位電話'
+loginip, string, isIP-true 									'最後登入 ip'
+token, string 												'token'
+photourl, string, allowNull-true 							'大頭照'
+lastlogintime, date 										'最後登入的日期'
+>
+
+- Permission
+#
+專案權限
+#
+<
+permlevel, string-30, primaryKey,allowNull-false 			'權限編號'
+descrtpyion, string, allowNull-false 						'敘述'
+>
+
+
+- ProjectMember
+#
+專案參與者
+1專案:n成員:1權限
+#
+<
+project, string-30, pk-project.identify 					'專案'
+member, string, pk-user.account 							'成員'
+ptype, string, pk-permission.permlevel 						'權限'
+isPin, boolean 												'釘上面'
+>
+
+- ProjectIetmGroup
+#
+專案元件的群組
+1專案:n群組
+n群組:m群組
+#
+<
+id, integer, autoIncrement, primaryKey, allowNull-false 	'專案元件群組'
+belongproject, string, pk-project.identitfy 				'專案'
+belonggroup, string,pk-ProjectItemGroup.id 					'父群組'
+name, string 												'名稱'
+wbsid, string, allowNull-true								'wbs欄位，若是空的，表示不是WBS'
+>
+
+- ProjectItemCategory
+#
+專案項目的類別
+元件(工項)類型 例如 版梁柱牆...
+#
+<
+id, integer, autoIncrement, primarykey, allowNull 			'專案類型編號'
+name, string 												'名稱'
+descripyion, text 											'敘述'
+>
+
+- ProjectItem
+#
+專案的元件
+#
+< 
+id, integer, autoIncrement, primarykey, allowNull-false 		'元件編號'
+name, string  													'名稱'
+bimid, string-10, allowNull-true 								'bimid'
+category, integer, pk-ProjectItemCategory.id, allowNull-false	'元件類型'
+																* 增加一個群組欄位，WBS分類方式
+>
+
+- ProjectItemGroupRelations
+#
+元件與群組的關聯
+n群組:m元件
+#
+<
+id, integer, autoIncrement, primarykey, allowNull-false 	'元件群組編號(可以刪除)'
+projectitem, integer, pk-ProjectItem.id,  allowNull-false	'元件'
+group, integer, pk-ProjectIetmGroup.id, allowNull-false		'屬於群組'
+>
+
+- Check
+#
+查驗活動
+2017/03/28-自主檢查
+1專案:n查驗
+#
+<
+id, integer, autoIncrement, primaryKey, allowNull-false			'查驗編號'
+datetime, date 													'執行日期' 改名 activityDate
+title, string 													'標題、主要名稱'
+belongProject, string-30, pk-project.identify, allowNull-false 	'屬於專案'
+description, text    											'敘述'
+>
+
+- CheckCategory
+#
+檢查項目的類別
+鋼筋模板混凝土
+#
+<
+id, integer, autoIncrement, primaryKey, allowNull-false  	'類別編號'
+name, string 												'名稱'
+category, text 												'敘述'
+>
+
+- CheckCategoryType
+#
+檢查類別需要被檢查的項目
+例如
+
+鋼筋需要被檢查 間距 號數 拉力測試
+1CheckCategory:nCheckCategoryType
+#
+<
+id, integer, autoIncrement, primaryKey, allowNull-false 			'編號'
+belongcheckcategory, integer, pk-CheckCategory.id, allowNull-false 	'屬於類別'
+name, string 														'名稱'
+>
+
+- CheckItem
+#
+查驗活動的項目
+1查驗活動:nCheckItem
+nCheckCategory:1CheckItem
+nCategoryType:1CheckItem
+#
+<
+id, integer, autoIncrement, primaryKey, allowNull-false			'項目編號'
+latitude, double 												'經度'
+longitude, double 												'緯度'
+projectitem, integer, pk-ProjectItem.id, allowNull-false 		'屬於專案元件'
+belongcheck, integer, pk-Check.id, allowNull-false 				'屬於查驗活動'
+checkcategory, integer, pk-CheckCategory.id, allowNull-false 	'查驗類別'
+categoryType, pk-CheckCategoryType.id, allowNull-false 			'查驗類別的類別'
+description, text 												'敘述'
+photourl, string, allowNull-true 								'照片'
+mission, integer 												'0枚缺失,1有缺失沒改善,2有缺失已改善'
+>
+
+
+- CheckItemCommands
+#
+檢查項目的評論
+1CheckItem:nCommand
+#
+<
+id, integer, autoIncrement, primaryKey, allowNull-false 		'評論編號'
+belongmember, string-30, pk-User.account, allowNull-false 		'評論者'
+belongcheckitem, integer, pk-CheckItem.id, allowNull-false 		'屬於查驗活動項目'
+command, text 													'評論內容'
+>
+
+---------------尚未新增------------------
+
+- CheckItemRelation
+#
+一個查驗活動項目，有可能同時屬於多個專案元件
+例如混凝土抗壓，可能是很多柱子的混凝土
+#
+<
+belongcheckitem, integer, pk-CheckItem.id, allowNull-false 		'屬於某個查驗項目'
+projectitem, integer, pk-ProjectItem.id, allowNull-false 		'屬於專案元件'
+>
+
+- UserGroup
+#
+使用者群組
+對於系統
+預設會有一個Admin,Normal
+#
+<
+id, integer, autoInchement, primaryKey, allowNull-false 		'群組編號'
+name, string 													'名稱'
+>
+
+- UserGroupRelation
+#
+使用者在使用者群組
+M:N
+#
+<
+ugroup, integer, pk-UserGroup.id, allowNull-false 				'屬於群組'
+user, string, pk-User.account, allowNull-false 					'使用者'
+>
+
+- CheckItemUpdate
+#
+缺失改善
+#
+<
+id, integer, autoIncrement, primaryKey, allowNull-false			'缺失改善編號'
+belongCheckItem, integer, pk-CheckItem.id 						'原本的CheckItem'
+photourl, string, allowNull-false								'照片'
+update, date, 													'改善日期'
+>
+
+

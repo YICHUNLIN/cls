@@ -1,0 +1,18 @@
+{
+	"JWT":{
+		"TokenScret":"",
+		"signature":""
+	},
+	"HTTP":{
+		"PORT":80
+	},
+	"HTTPS":{
+		"PORT":443,
+		"KEY_PATH":""
+	},
+	"Forge":{
+		"client_id":"",
+		"secret":"",
+		"bucketkey":""
+	}
+}

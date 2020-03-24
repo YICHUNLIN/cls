@@ -1,0 +1,103 @@
+extends layout
+
+block content
+	//login
+	div(ng-controller="loginController as lc" )
+		div.ui.middle.aligned.center.aligned.grid(ng-show="pageSwitch == 'login' || pageSwitch == 'signup'" )
+			div#column
+				h2.ui.teal.image.header
+					//img.image(src='/img/Logo.png')
+					div.content
+						| 歡迎進入管理系統
+				form.ui.large.form(name="loginForm")
+					div.ui.stacked.segment
+						div.field
+							div.ui.left.icon.input
+								i.user.icon
+								input(type='text' name='account', placeholder='Account' ng-model="loginInfo.account" required)
+						div.field
+							div.ui.left.icon.input
+								i.lock.icon
+								input(type='password', name='password', placeholder='Password' ng-model="loginInfo.password" required)
+						button.ui.fluid.large.teal.button(type="submit" ng-click="lc.btnLogin()" ng-disabled="loginForm.$invalid")
+							| 登入
+				div.ui.message
+					div.field
+						| New to us?
+						a(href= "" ng-click="lc.btnSignup()") Sign Up
+					div.field
+						| Foget your password?
+						a(href= "" ng-click="") reset your password
+				//div.ui.red.message(ng-show="iserror")
+					| {{errormsg}}
+			// sign up
+			//div.ui.middle.aligned.center.aligned.grid(ng-show="lc.showSignup && pageSwitch == 'login' ")
+				div#column
+					h2.ui.teal.image.header
+					div.content
+						form.ui.form( name="signupForm" novalidate='')
+							div.ui.red.message(ng-show="signupForm.account.$error.required")
+								| * 帳號欄位是必須的
+							div.ui.red.message(ng-show="signupForm.account.$error.minlength")
+								| * 帳號長度必須大於6
+							div.ui.red.message(ng-show="signupForm.password.$error.required || signupForm.password_again.$error.required")
+								| * 密碼欄位是必須的
+							div.ui.red.message(ng-show="signupInfo.password != signupInfo.password_again")
+								| * 密碼欄位驗證錯誤
+							div.ui.red.message(ng-show="signupForm.lastname.$error.required || signupForm.firstname.$error.required")
+								| * 姓名欄位是必須的
+							div.ui.red.message(ng-show="signupForm.role.$error.required")
+								| * 角色欄位是必須的
+							div.ui.red.message(ng-show="signupForm.phone.$error.required")
+								| * 電話欄位是必須的
+							div.ui.red.message(ng-show="signupForm.email.$error.required || signupForm.email.$error.pattern")
+								| * E-mail欄位是必須的
+							div.ui.stacked.segment
+								h4.ui.dividing.header 帳號密碼
+								div.field
+									div.three.twelve.wide.fields
+										div.field
+											input(type='text' name="account" placeholder='帳號' ng-model="signupInfo.account" ng-minlength="6" required)
+
+										div.field
+											input(type='password' name="password" placeholder='密碼' ng-model="signupInfo.password"  required)
+										div.field
+											input(type='password' name="password_again" placeholder='重複' ng-model="signupInfo.password_again" required)
+								h4.ui.dividing.header 個人資料
+								div.field
+									div.two.twelve.wide.fields
+										div.field
+											input(type='text' name="firstname" placeholder='姓' ng-model="signupInfo.firstname" required)
+										div.field
+											input(type='text' name="lastname" placeholder='名' ng-model="signupInfo.lastname" required)
+								div.field
+									div.fields
+										div.twelve.wide.field
+											input(type='text' name="phone" placeholder='手機' ng-model="signupInfo.mobile" required)
+										div.twelve.wide.field
+											input(type='text' name="tel" placeholder='室內電話' ng-model="signupInfo.tel")
+									div.sixteen.wide.field
+										input(type='email' name="email"  placeholder='E-mail' ng-model="signupInfo.email" ng-pattern="/^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/" required)
+									div.sixteen.wide.field
+										div.ui.fluid.search.selection.dropdown.role
+											input#roleselect(type='hidden' name='role' ng-model="signupInfo.role" value="" required)
+											i.dropdown.icon
+											div.default.text 
+												| 選擇角色
+											div.menu
+												div.item(ng-repeat="arole in roles" data-value="{{arole.id}}" ng-click="lc.dropdownselected(arole)")
+													|  {{arole.name}}
+								h4.ui.dividing.header 單位(非必要)
+								div.field
+									div.fields
+										div.sixteen.wide.field
+											input(type='text', name='shipping[address]', placeholder='名稱' ng-model="signupInfo.company_name" )
+									div.fields
+										div.sixteen.wide.field
+											input(type='text', name='shipping[address-2]', placeholder='地址' ng-model="signupInfo.company_address" )
+									div.fields
+										div.sixteen.wide.field
+											input(type='text', name='shipping[address-2]', placeholder='電話' ng-model="signupInfo.company_tel" )
+								button.ui.fluid.large.teal.button(type="submit" ng-click="lc.btnsignupOK()" ng-disabled="signupForm.$invalid"  )
+									| sign up
+			script(src='js/semantic_action.js')

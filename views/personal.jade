@@ -1,0 +1,31 @@
+extends sublayout
+
+block rightcontainer
+	div.ui.main.container(ng-controller = "personalcontroller as pc")
+		
+		img(width="100px" height="128px" ng-src="{{personalInfo.photourl}}")
+		p
+		input(type='file', name='photo')
+		button.ui.large.teal.button(ng-click="upload()") 
+			| 上傳
+		p
+		p 帳號:tom1234
+		p 密碼
+		input(type="password" name="password" ng-model="pwd.pwd1") 
+		p 再輸入一次密碼
+		input(type="password" name="password_again" ng-model="pwd.pwd2")
+		p
+		button.ui.mini.green.button(ng-click="changePwd()")
+			| 變更密碼
+		div.ui.negative.message(ng-show="ErrMsg")
+			i.close.icon
+			p
+				| 密碼不一致
+		div.ui.success.message(ng-show="currMsg")
+			i.close.icon
+			div.header
+				| 密碼已變更
+
+
+
+		p 基本資料

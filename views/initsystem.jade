@@ -1,0 +1,75 @@
+extends layout
+
+block initcontent
+	div.containerview
+		div.ui.equal.width.middle.aligned.center.aligned.grid
+			div.column
+				h3 預設群組
+				table.ui.inverted.teal.selectable.celled.right.aligned.table
+					thead
+						tr
+							th.center.aligned 群組
+					tbody
+						tr
+							td.center.aligned admin
+						tr
+							td.center.aligned normal
+
+			div.column
+				h3 預設帳號
+				table.ui.inverted.teal.selectable.celled.right.aligned.table
+					thead
+						tr
+							
+							th.left.aligned 帳號
+							th.center.aligned 姓名
+							th.center.aligned email
+							th.center.aligned 角色
+							th.center.aligned 群組
+							th.center.aligned 密碼
+					tbody
+						tr
+							
+							td.left.aligned admin1234
+							td.center.aligned admin
+							td.center.aligned yichun03@gmail.com
+							td.center.aligned Engineer
+							td.center.aligned admin
+							td.center.aligned ******
+						tr
+							
+							td.left.aligned tom1234
+							td.center.aligned tom
+							td.center.aligned yichun03@gmail.com
+							td.center.aligned Engineer
+							td.center.aligned normal
+							td.center.aligned ******
+	div.containerview
+		div.ui.equal.width.middle.aligned.center.aligned.grid
+			div.column
+				h3 預設工程權限
+				table.ui.inverted.teal.selectable.celled.right.aligned.table
+					thead
+						tr
+							th.center.aligned 權限
+							th.center.aligned 說明
+					tbody
+						tr
+							td.center.aligned level0
+							td.center.aligned Read
+						tr
+							td.center.aligned level1
+							td.center.aligned Command, Read
+						tr
+							td.center.aligned level2 
+							td.center.aligned Check, Command, Read
+						tr
+							td.center.aligned level3
+							td.center.aligned Project, Check, Command, Read
+						tr
+							td.center.aligned level4 
+							td.center.aligned Owner, Project, Check, Command, Read
+
+			div.column
+				h3 預設元件類型
+			

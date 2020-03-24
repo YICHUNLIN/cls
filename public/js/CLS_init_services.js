@@ -1,0 +1,1 @@
+var service = angular.module('CLS_init_services',[]);

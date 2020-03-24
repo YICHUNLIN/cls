@@ -1,0 +1,305 @@
+extends layout
+
+block admincontent
+    style(type='text/css').
+        body {
+        background-color: #FFFFFF;
+        }
+        .ui.menu .item img.logo {
+            margin-right: 1.5em;
+        }
+        .main.container {
+            margin-top: 6em;
+        }
+        .wireframe {
+            margin-top: 2em;
+        }
+        .ui.footer.segment {
+            margin: 5em 0em 0em;
+            padding: 5em 0em;
+        }
+        .column {
+            max-width:450px;
+        }
+        .column2 {
+            max-width:450px;
+        }
+
+    // menu
+    div.ui.teal.fixed.inverted.menu(ng-show="!APC.isLogin()")
+        div.ui.container(ng-controller="MenuController as MC")
+            a.header.item(href='#')
+                | Construction Log System Administration
+            a.item(ng-click="MC.changePager('SystemView')") 系統資訊
+            a.item(ng-click="MC.changePager('UserView')")  使用者管理
+            a.item(ng-click="MC.changePager('GroupView')")  群組管理
+            a.item(ng-click="MC.changePager('TemplateView')") 勘驗樣板管理
+            div.right.menu
+                a.item 
+                    | 嗨! {{MC.user}}
+                a.item(href='#') 密碼變更
+                a.item(ng-click="MC.clickLogout()") 登出
+    // main container
+    div.ui.main.container
+        // login form
+        div.containerview.ui.middle.aligned.center.aligned.grid(ng-switch-when="Login")
+            div.column
+                h2.ui.teal.image.header
+                    div.content
+                        | Log-in to your Admin account
+                form.ui.large.form(ng-controller="LoginController as lc")
+                    div.ui.stacked.segment
+                        div.field
+                            div.ui.left.icon.input
+                                i.user.icon
+                                input(type='text', name='email', placeholder='account' ng-model="loginInfo.account")
+                        div.field
+                            div.ui.left.icon.input
+                                i.lock.icon
+                                input(type='password', name='password', placeholder='Password' ng-model="loginInfo.password")
+                        div.ui.fluid.large.teal.button(type="submit"  ng-click="lc.clickLogin()")
+                            | Login
+        
+        // user
+        div.containerview(ng-switch-when="UserView" ng-controller="UserViewController as UVC")
+            table.ui.inverted.teal.selectable.celled.right.aligned.table
+                thead
+                    tr
+                        //th
+                        th.left.aligned 帳號
+                        th.center.aligned 姓名
+                        th.center.aligned email
+                        th.center.aligned 角色
+                        th.center.aligned 最後登入時間
+                        th.center.aligned 最後登入ip
+                        //th.center.aligned 狀態
+                tbody(ng-repeat="user in UVC.users")
+                    tr
+                        //td.center.aligned
+                            div.ui.radio.checkbox
+                            input(type='radio', name='radio', checked='checked')
+                        td.left.aligned {{user.account}}
+                        td.center.aligned {{user.firstname}} {{user.lastname}}
+                        td.center.aligned {{user.email}}
+                        td.center.aligned {{user.role}}
+                        td.center.aligned {{user.lastlogintime | date:'yyyy/MM/dd hh:mm:ss'}}
+                        td.center.aligned {{user.loginip}}
+            button.teal.ui.button(ng-click="UVC.clickAdd()") 新增
+            //button.yellow.ui.button(ng-click="UVC.clickEdit()") 修改
+            // signup
+            div.ui.middle.aligned.center.aligned.grid#adminForm(ng-show="UVC.showForm()")
+                div.column2
+                    h2.ui.teal.image.header
+                    div.content
+                        form.ui.form( name="signupForm" novalidate='')
+                            div.ui.red.message(ng-show="signupForm.account.$error.required")
+                              | * 帳號欄位是必須的
+                            div.ui.red.message(ng-show="signupForm.account.$error.minlength")
+                              | * 帳號長度必須大於6
+
+                            div.ui.red.message(ng-show="signupForm.password.$error.required || signupForm.password_again.$error.required")
+                              | * 密碼欄位是必須的
+
+                            div.ui.red.message(ng-show="signupInfo.password != signupInfo.password_again")
+                              | * 密碼欄位驗證錯誤
+
+                            div.ui.red.message(ng-show="signupForm.lastname.$error.required || signupForm.firstname.$error.required")
+                              | * 姓名欄位是必須的
+
+                            div.ui.red.message(ng-show="signupForm.role.$error.required")
+                              | * 角色欄位是必須的
+
+                            div.ui.red.message(ng-show="signupForm.phone.$error.required")
+                              | * 電話欄位是必須的
+                            div.ui.red.message(ng-show="signupForm.email.$error.required || signupForm.email.$error.pattern")
+                              | * E-mail欄位是必須的
+
+
+                            div.ui.stacked.segment
+                                h4.ui.dividing.header 帳號密碼
+                                div.field
+                                    div.three.twelve.wide.fields
+                                        div.field
+                                            input(type='text' name="account" placeholder='帳號' ng-model="signupInfo.account" ng-minlength="6" required)
+
+                                        div.field
+                                            input(type='password' name="password" placeholder='密碼' ng-model="signupInfo.password"  required)
+                                        div.field
+                                            input(type='password' name="password_again" placeholder='重複' ng-model="signupInfo.password_again" required)
+
+                                h4.ui.dividing.header 個人資料
+                                div.field
+                                    div.two.twelve.wide.fields
+                                        div.field
+                                            input(type='text' name="firstname" placeholder='姓' ng-model="signupInfo.firstname" required)
+                                        div.field
+                                            input(type='text' name="lastname" placeholder='名' ng-model="signupInfo.lastname" required)
+                                div.field
+                                    div.fields
+                                        div.twelve.wide.field
+                                            input(type='text' name="phone" placeholder='手機' ng-model="signupInfo.mobile" required)
+                                        div.twelve.wide.field
+                                            input(type='text' name="tel" placeholder='室內電話' ng-model="signupInfo.tel")
+
+                                    div.sixteen.wide.field
+                                        input(type='email' name="email"  placeholder='E-mail' ng-model="signupInfo.email" ng-pattern="/^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/" required)
+                                    div.sixteen.wide.field
+                                        div.ui.fluid.search.selection.dropdown.role
+                                            input#roleselect(type='hidden' name='role' ng-model="signupInfo.role" value="" required)
+                                            i.dropdown.icon
+                                            div.default.text 
+                                                | 選擇角色
+                                            div.menu
+                                                div.item(ng-repeat="arole in roles" data-value="{{arole.id}}" ng-click="lc.dropdownselected(arole)")
+                                                          |  {{arole.name}}
+                                h4.ui.dividing.header 單位(非必要)
+                                div.field
+                                    div.fields
+                                        div.sixteen.wide.field
+                                            input(type='text', name='shipping[address]', placeholder='名稱' ng-model="signupInfo.company_name" )
+                                    div.fields
+                                        div.sixteen.wide.field
+                                            input(type='text', name='shipping[address-2]', placeholder='地址' ng-model="signupInfo.company_address" )
+                                    div.fields
+                                        div.sixteen.wide.field
+                                            input(type='text', name='shipping[address-2]', placeholder='電話' ng-model="signupInfo.company_tel" )
+
+                                button.ui.fluid.large.teal.button(type="submit" ng-disabled="signupForm.$invalid"  )
+                                      | sign up
+                script(src='js/semantic_action.js')
+
+        // group
+        div.containerview(ng-switch-when="GroupView" ng-controller="GroupController as GC")
+            div.ui.middle.aligned.center.aligned.grid
+                div.nine.wide.column
+                   
+                    table.ui.inverted.teal.selectable.celled.right.aligned.table
+                        thead
+                            tr
+                                //th
+                                th.left.aligned 群組名稱
+                                //th.center.aligned 人數
+                        tbody(ng-repeat="group in GC.groups")
+                            tr
+                                //td.center.aligned
+                                    div.ui.radio.checkbox
+                                    input(type='radio', name='radio1', checked='checked')
+                                td.left.aligned {{group.name}}
+                     div.ui.three.column.grid
+                        div.ui.input.column
+                            input.ui.input(type='text' name="groupname" placeholder='群組' ng-model="GC.groupname")
+                        div.column
+                            button.teal.ui.button(ng-click="GC.clickaddGroup()") 新增
+                        div.column
+                            button.yellow.ui.button(ng-click="GC.clickDeleteGroup()") 刪除
+
+                div.nine.wide.column
+                    
+                    table.ui.inverted.teal.selectable.celled.right.aligned.table
+                        thead
+                            tr
+                                //th
+                                th.left.aligned 群組名稱
+                                th.center.aligned 帳號
+                                th 加入日期
+                        tbody(ng-repeat="ug in GC.usergroups")
+                            tr
+                                //td.center.aligned
+                                    div.ui.radio.checkbox
+                                    input(type='radio', name='radio2', checked='checked')
+                                td.left.aligned {{ug.group}}
+                                th.center.aligned  {{ug.user}}
+                                td {{ug.createdAt |  date:'yyyy/MM/dd'}}
+                    div.ui.four.column.grid
+                        div.ui.input.column
+                            input(type='text' name="member" placeholder='帳號' ng-model="GC.ugfields.account")
+                        div.ui.input.column
+                            input(type='text' name="selectgn" placeholder='群組名稱' ng-model="GC.ugfields.group")
+                        div.column
+                            button.teal.ui.button(ng-click="GC.clickAddUserGroup()") 新增
+                        div.column
+                            button.yellow.ui.button(ng-click="GC.clickDeleteUserGroup()") 刪除
+
+        
+
+                        
+        div.containerview(ng-switch-when="TemplateView" ng-controller="TemplateController as TC")
+            div.ui.equal.width.middle.aligned.center.aligned.grid
+                div.column
+                    h3 元件類型
+                    table.ui.inverted.teal.selectable.celled.right.aligned.table
+                        thead
+                            tr
+                                //th
+                                th.center.aligned 名稱
+                                th.center.aligned 描述
+                        tbody(ng-repeat="pic in TC.projectItemCategories")
+                            tr
+                                td {{pic.name}}
+                                td {{pic.description}}
+                    div.ui.two.column.grid
+                        div.ui.input.column
+                            input.ui.input(type='text' name="category_name" placeholder='名稱' ng-model="TC.categoryField.category_name")
+                    
+                        div.ui.input.column
+                            input.ui.input(type='text' name="category_description" placeholder='描述' ng-model="TC.categoryField.category_description")
+                        div.column
+                            button.teal.ui.button(ng-click="TC.clickProjectItemCategoryAdd()") 更新
+                        div.column
+                            button.yellow.ui.button(ng-click="TC.clickDeleteProjectItemCategory()") 刪除
+
+            div.ui.equal.width.middle.aligned.center.aligned.grid   
+                div.column
+                    h3 勘驗項目
+                    table.ui.inverted.teal.selectable.celled.right.aligned.table
+                        thead
+                            tr
+                                //th
+                                //th.center.aligned 編號 
+                                th.center.aligned 名稱
+                                th.center.aligned 描述
+                        tbody(ng-repeat="cc in TC.checkcategories"  ng-click="TC.selectCheckCategory(cc.name)")
+                            tr
+                                //td.center.aligned {{cc.id}}
+                                td.center.aligned {{cc.name}}
+                                td.center.aligned {{cc.category}}
+                    div.ui.two.column.grid
+                        div.ui.input.column
+                            input.ui.input(type='text' name="Checkcategory_name" placeholder='名稱' ng-model="TC.checkcategoryField.Checkcategory_name")
+                    
+                        div.ui.input.column
+                            input.ui.input(type='text' name="Checkcategory_description" placeholder='描述' ng-model="TC.checkcategoryField.Checkcategory_description")
+                        div.column
+                            button.teal.ui.button(ng-click="TC.clickCheckCategoryAdd()") 更新
+                        div.column
+                            button.yellow.ui.button(ng-click="TC.clickDeleteCheckCategory()") 刪除
+                div.column(ng-show="TC.selectedCheckCategory != null")
+                    h3 勘驗項目類別
+                    table.ui.inverted.teal.selectable.celled.right.aligned.table
+                        thead
+                            tr
+                                th.center.aligned 名稱
+                        tbody(ng-repeat="cctypes in TC.selectedCheckCategoryTypes")
+                            tr
+                                td.center.aligned {{cctypes.name}}
+                    div.ui.three.column.grid
+                        div.ui.input.column
+                            input.ui.input(type='text' name="CheckcategoryType_name" placeholder='項目類別名稱' ng-model="TC.checkcategorytypeNameField")
+                    
+                        div.column
+                            button.teal.ui.button(ng-click="TC.clickCheckCategoryTypeUpdate()") 新增
+                        div.column
+                            button.yellow.ui.button(ng-click="TC.clickDeleteCheckCategoryType()") 刪除
+                
+            
+
+
+
+
+
+
+
+
+
+
+

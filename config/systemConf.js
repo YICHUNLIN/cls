@@ -1,0 +1,4 @@
+exports.jwtSetting = {
+	jwtTokenScret:'',
+	signature:''
+}

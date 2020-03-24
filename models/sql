@@ -1,0 +1,5 @@
+CREATE database dev_cls; 
+CREATE USER 'dev_cls'@'%' IDENTIFIED BY 'cls_dev';
+GRANT ALL PRIVILEGES ON dev_cls.* TO 'dev_cls'@'%';
+
+

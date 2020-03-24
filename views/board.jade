@@ -1,0 +1,115 @@
+extends sublayout
+
+block rightcontainer
+	div.ui.container(ng-controller="boardController as bc")
+		div.ui.secondary.menu
+			a.item(ng-click="bc.btnaddproject()")
+					| 新增Project
+			a.item(ng-click="bc.btnFilterAll()")
+					| 全部
+			a.item(ng-click="bc.btnFilterNotStart()")
+					| 未開始
+			a.item(ng-click="bc.btnFilterDoing()")
+					| 執行中
+			a.item(ng-click="bc.btnFilterDone()")
+					| 已完成
+			//div.right.menu
+				div.item
+					div.ui.icon.input
+						input(type='text', placeholder='Search...')
+						i.search.link.icon
+
+
+		div.ui.grid.container
+			div.four.wide.column(ng-repeat="card in bc.cards" ng-show="!card.isPin")
+				div.ui.raised.link.card
+					div.content
+						a(ng-click="bc.click_thumb(card.identify)")
+							i.right.floated.large.red.pin.icon
+						div.header
+							div(ng-show="card.startdate && card.actualEndDate ")
+								i.red.alarm.icon
+								| {{card.name}}
+							div(ng-show="card.startdate && !card.actualEndDate ")
+								i.green.alarm.icon
+								| {{card.name}}
+							div(ng-show="!card.startdate&& !card.actualEndDate")
+								i.yellow.alarm.icon
+								| {{card.name}}
+					div.content
+						a(ng-click="bc.btnselectedCard(card.identify)")
+							h4.ui.sub.header
+							div.ui.small.feed
+								div.event(ng-show="card.startdate")
+									div.content
+										div.summary
+											span 起日: {{card.startdate | date:'yyyy/MM/dd'}}
+								div.event
+									div.content
+										div.summary
+											span 為期: {{card.duration}} {{card.datetype}}
+								div.event
+									div.content
+										div.summary
+											span.category 描述: {{card.description}}
+								div.event(ng-show="card.actualEndDate")
+									div.content
+										div.summary
+											span.category 實際迄日: {{card.actualEndDate | date:'yyyy/MM/dd'}}
+								div.event(ng-show="card.estimateEndDate")
+									div.content
+										div.summary
+											span.category 預計迄日: {{card.estimateEndDate | date:'yyyy/MM/dd'}}
+								div.event
+									div.content
+										div.summary
+											span.category 權限: {{card.ptype}}
+
+		// 分隔線
+		h2.ui.dividing.header
+
+		div.ui.grid.container                                  
+			div.four.wide.column(ng-repeat="card in bc.cards" ng-show="card.isPin")
+				div.ui.raised.link.card
+					div.content
+						a(ng-click="bc.click_thumb(card.identify)")
+							i.right.floated.large.blue.pin.icon
+						div.header
+							div(ng-show="card.startdate && card.actualEndDate")
+								i.red.alarm.icon
+								| {{card.name}}
+							div(ng-show="card.startdate && !card.actualEndDate")
+								i.green.alarm.icon
+								| {{card.name}}
+							div(ng-show="!card.startdate && !card.actualEndDate")
+								i.yellow.alarm.icon
+								| {{card.name}}
+					div.content
+						a(ng-click="bc.btnselectedCard(card.identify)")
+							h4.ui.sub.header
+							div.ui.small.feed
+								div.event(ng-show="card.startdate")
+									div.content
+										div.summary
+											span 起日: {{card.startdate | date:'shortDate'}}
+								div.event
+									div.content
+										div.summary
+											span 為期: {{card.duration}} {{card.datetype}}
+								div.event
+									div.content
+										div.summary
+											span.category 描述: {{card.description}}
+								div.event(ng-show="card.actualEndDate")
+									div.content
+										div.summary
+											span.category 實際迄日: {{card.actualEndDate | date:'shortDate'}}
+								div.event(ng-show="card.estimateEndDate")
+									div.content
+										div.summary
+											span.category 預計迄日: {{card.estimateEndDate | date:'shortDate'}}
+								div.event
+									div.content
+										div.summary
+											span.category 權限: {{card.ptype}}
+

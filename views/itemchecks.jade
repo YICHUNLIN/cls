@@ -1,0 +1,24 @@
+extends sublayout
+
+block rightcontainer
+	div.ui.container(ng-controller="itemchecksController as csc")
+		//div.ui.secondary.menu
+			a.item(ng-click="")
+				| 按鈕測試
+
+		{{$localStorage.selectedCheckSet}}
+		div.ui.grid.container(ng-repeat="checkitem in csc.checkitems")
+			div.column
+				div.ui.stacked.segment
+					div.ui.horizontal.divider
+						| {{checkitem.name}} - {{checkitem.checkcategory}} - {{checkitem.categoryType}}
+					p {{checkitem.description}}
+					div.ui.grid
+						div.five.wide.column(ng-repeat="checkitemPicture in checkitem.checkitem_pictures")
+
+							//div.ui.horizontal.divider
+								| 個別照片描述
+							div.ui.card
+								div.ui.large.image
+									//svg(width='200', height='100')
+									img(src='{{checkitemPicture.url}}')
