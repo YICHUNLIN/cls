@@ -54,4 +54,4 @@ mysql.server start
 2. add permission: 
 
 
-License under MIT.
+License under GPL3.0.
