@@ -33,7 +33,7 @@
     "express-session": "^1.17.0",
     "extend": "^3.0.0",
     "forge-apis": "^0.4.8",
-    "googleapis": "^18.0.0",
+    "googleapis": "^39.1.0",
     "guid": "0.0.12",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.1",
