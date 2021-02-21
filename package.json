@@ -71,7 +71,7 @@
     "require-dot-file": "^0.4.0",
     "run-sequence": "^1.2.2",
     "semantic-ui": "^2.2.6",
-    "sequelize": "^3.30.2",
+    "sequelize": "^5.15.1",
     "sequelize-cli": "^2.5.1",
     "sequelize-restful": "*",
     "session-file-store": "^1.4.0",
