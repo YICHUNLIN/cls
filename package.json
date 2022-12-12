@@ -29,7 +29,7 @@
     "cors": "*",
     "debug": "~2.2.0",
     "del": "^2.2.2",
-    "express": "^4.14.0",
+    "express": "^4.17.3",
     "express-session": "^1.17.0",
     "extend": "^3.0.0",
     "forge-apis": "^0.4.8",
